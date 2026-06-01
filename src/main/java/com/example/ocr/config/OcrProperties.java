@@ -40,10 +40,10 @@ public class OcrProperties {
     private int pdfRenderDpi = 200;
 
     @Min(100)
-    private int maxImageWidth = 2500;
+    private int maxImageWidth = 4000;
 
     @Min(100)
-    private int maxImageHeight = 2500;
+    private int maxImageHeight = 4000;
 
     @Min(70)
     private int tesseractDpi = 300;
@@ -177,6 +177,22 @@ public class OcrProperties {
     public static class Preprocessing {
         private boolean enabled = true;
 
+        private String profile = "chinese-math";
+
+        private boolean binarizationEnabled = false;
+
+        private boolean denoise = false;
+
+        private boolean deskew = false;
+
+        @Min(0)
+        @Max(255)
+        private int denoiseThreshold = 18;
+
+        @Min(0)
+        @Max(15)
+        private double deskewMaxAngle = 5.0;
+
         @Min(3)
         private int adaptiveThresholdWindowSize = 31;
 
@@ -208,6 +224,54 @@ public class OcrProperties {
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        public String getProfile() {
+            return profile;
+        }
+
+        public void setProfile(String profile) {
+            this.profile = profile;
+        }
+
+        public boolean isBinarizationEnabled() {
+            return binarizationEnabled;
+        }
+
+        public void setBinarizationEnabled(boolean binarizationEnabled) {
+            this.binarizationEnabled = binarizationEnabled;
+        }
+
+        public boolean isDenoise() {
+            return denoise;
+        }
+
+        public void setDenoise(boolean denoise) {
+            this.denoise = denoise;
+        }
+
+        public boolean isDeskew() {
+            return deskew;
+        }
+
+        public void setDeskew(boolean deskew) {
+            this.deskew = deskew;
+        }
+
+        public int getDenoiseThreshold() {
+            return denoiseThreshold;
+        }
+
+        public void setDenoiseThreshold(int denoiseThreshold) {
+            this.denoiseThreshold = denoiseThreshold;
+        }
+
+        public double getDeskewMaxAngle() {
+            return deskewMaxAngle;
+        }
+
+        public void setDeskewMaxAngle(double deskewMaxAngle) {
+            this.deskewMaxAngle = deskewMaxAngle;
         }
 
         public int getAdaptiveThresholdWindowSize() {
@@ -290,6 +354,11 @@ public class OcrProperties {
 
         private String workingDirectory = "";
 
+        @NotBlank
+        private String language = "ch";
+
+        private boolean useAngleCls = true;
+
         @Min(1)
         private int timeoutSeconds = 30;
 
@@ -315,6 +384,22 @@ public class OcrProperties {
 
         public void setWorkingDirectory(String workingDirectory) {
             this.workingDirectory = workingDirectory;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public void setLanguage(String language) {
+            this.language = language;
+        }
+
+        public boolean isUseAngleCls() {
+            return useAngleCls;
+        }
+
+        public void setUseAngleCls(boolean useAngleCls) {
+            this.useAngleCls = useAngleCls;
         }
 
         public int getTimeoutSeconds() {

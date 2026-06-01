@@ -90,6 +90,7 @@ public class Tess4jOcrEngine implements OcrEngine {
             result.setPage(page);
             result.setLanguage(language);
             result.setEngine(engineName());
+            result.setPreprocessProfile(preprocessProfile(options));
             result.setDurationMillis((System.nanoTime() - start) / 1_000_000);
             return postprocessPipeline.process(result, options);
         } catch (TesseractException e) {
@@ -117,6 +118,13 @@ public class Tess4jOcrEngine implements OcrEngine {
             return options.getLanguage();
         }
         return properties.getLanguage();
+    }
+
+    private String preprocessProfile(OcrOptions options) {
+        if (options != null && options.getPreprocessProfile() != null && !options.getPreprocessProfile().isBlank()) {
+            return options.getPreprocessProfile();
+        }
+        return properties.getPreprocessing().getProfile();
     }
 
     private int psm(OcrOptions options) {

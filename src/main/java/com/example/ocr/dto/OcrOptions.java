@@ -22,6 +22,15 @@ public class OcrOptions {
 
     private Boolean preprocess;
 
+    @Pattern(regexp = "^(scan|photo|chinese-math)?$", message = "profile must be scan, photo, or chinese-math")
+    private String profile;
+
+    private Boolean binarization;
+
+    private Boolean denoise;
+
+    private Boolean deskew;
+
     public String getEngine() {
         return engine;
     }
@@ -60,5 +69,45 @@ public class OcrOptions {
 
     public void setPreprocess(Boolean preprocess) {
         this.preprocess = preprocess;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getPreprocessProfile() {
+        return profile;
+    }
+
+    public void setPreprocessProfile(String preprocessProfile) {
+        this.profile = preprocessProfile;
+    }
+
+    public Boolean getBinarization() {
+        return binarization;
+    }
+
+    public void setBinarization(Boolean binarization) {
+        this.binarization = binarization;
+    }
+
+    public Boolean getDenoise() {
+        return denoise;
+    }
+
+    public void setDenoise(Boolean denoise) {
+        this.denoise = denoise;
+    }
+
+    public Boolean getDeskew() {
+        return deskew;
+    }
+
+    public void setDeskew(Boolean deskew) {
+        this.deskew = deskew;
     }
 }

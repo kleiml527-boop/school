@@ -74,20 +74,26 @@ public class PaddleOcrEngine implements OcrEngine {
     }
 
     public boolean isConfigured() {
-        return properties.getPaddle().isEnabled() && !properties.getPaddle().getCommand().isBlank();
+        return hasText(properties.getPaddle().getCommand());
+    }
+
+    public boolean isAvailable() {
+        return properties.getPaddle().isEnabled() && isConfigured();
     }
 
     private OcrResult recognizeImage(BufferedImage source, OcrOptions options, int page) {
-        if (!isConfigured()) {
+        if (!isAvailable()) {
             throw new OcrException("PaddleOCR is not enabled or command is not configured");
         }
         long start = System.nanoTime();
         BufferedImage image = preprocessPipeline.process(source, options);
         Path imagePath = writeTempImage(image);
         try {
-            String output = runPaddle(imagePath);
+            String language = paddleLanguage(options);
+            String output = runPaddle(imagePath, language);
             long durationMillis = (System.nanoTime() - start) / 1_000_000;
-            OcrResult result = resultParser.parse(output, page, language(options), durationMillis);
+            OcrResult result = resultParser.parse(output, page, language, durationMillis);
+            result.setPreprocessProfile(preprocessProfile(options));
             return postprocessPipeline.process(result, options);
         } finally {
             deleteTempImage(imagePath);
@@ -104,11 +110,11 @@ public class PaddleOcrEngine implements OcrEngine {
         }
     }
 
-    private String runPaddle(Path imagePath) {
-        List<String> command = command(imagePath);
+    private String runPaddle(Path imagePath, String language) {
+        List<String> command = command(imagePath, language);
         ProcessBuilder builder = new ProcessBuilder(command);
         builder.redirectErrorStream(true);
-        if (!properties.getPaddle().getWorkingDirectory().isBlank()) {
+        if (hasText(properties.getPaddle().getWorkingDirectory())) {
             builder.directory(Path.of(properties.getPaddle().getWorkingDirectory()).toFile());
         }
         try {
@@ -140,7 +146,7 @@ public class PaddleOcrEngine implements OcrEngine {
         }
     }
 
-    private List<String> command(Path imagePath) {
+    List<String> command(Path imagePath, String language) {
         List<String> command = new ArrayList<>();
         String configured = properties.getPaddle().getCommand().trim();
         StringBuilder current = new StringBuilder();
@@ -161,7 +167,12 @@ public class PaddleOcrEngine implements OcrEngine {
         if (!current.isEmpty()) {
             command.add(current.toString());
         }
+        command.add("--image");
         command.add(imagePath.toAbsolutePath().toString());
+        command.add("--lang");
+        command.add(language);
+        command.add("--use-angle-cls");
+        command.add(Boolean.toString(properties.getPaddle().isUseAngleCls()));
         return command;
     }
 
@@ -169,11 +180,22 @@ public class PaddleOcrEngine implements OcrEngine {
         return Duration.ofSeconds(properties.getPaddle().getTimeoutSeconds());
     }
 
-    private String language(OcrOptions options) {
+    private String paddleLanguage(OcrOptions options) {
         if (options != null && options.getLanguage() != null && !options.getLanguage().isBlank()) {
             return options.getLanguage();
         }
-        return properties.getLanguage();
+        return properties.getPaddle().getLanguage();
+    }
+
+    private String preprocessProfile(OcrOptions options) {
+        if (options != null && options.getPreprocessProfile() != null && !options.getPreprocessProfile().isBlank()) {
+            return options.getPreprocessProfile();
+        }
+        return properties.getPreprocessing().getProfile();
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
     private void deleteTempImage(Path imagePath) {

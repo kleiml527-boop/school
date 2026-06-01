@@ -18,6 +18,9 @@ public class BinarizationPreprocessor implements ImagePreprocessor {
 
     @Override
     public BufferedImage process(BufferedImage image, OcrOptions options) {
+        if (!binarizationEnabled(options)) {
+            return image;
+        }
         int width = image.getWidth();
         int height = image.getHeight();
         BufferedImage binary = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
@@ -64,6 +67,13 @@ public class BinarizationPreprocessor implements ImagePreprocessor {
                 - integral[top][right + 1]
                 - integral[bottom + 1][left]
                 + integral[top][left];
+    }
+
+    private boolean binarizationEnabled(OcrOptions options) {
+        if (options != null && options.getBinarization() != null) {
+            return options.getBinarization();
+        }
+        return properties.getPreprocessing().isBinarizationEnabled();
     }
 
     private int normalizedWindowSize() {

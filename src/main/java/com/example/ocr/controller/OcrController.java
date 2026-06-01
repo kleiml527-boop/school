@@ -89,13 +89,13 @@ public class OcrController {
             @RequestParam("file") MultipartFile file,
             @Valid @ModelAttribute OcrOptions options
     ) {
-        return ApiResponse.ok(wrongQuestionExtractor.extract(ocrService.recognize(readFile(file), options)));
+        return ApiResponse.ok(wrongQuestionExtractor.extract(ocrService.recognize(readFile(file), options), options));
     }
 
     @Operation(summary = "Extract wrong questions from a Base64 image or PDF")
     @PostMapping("/wrong-questions/base64")
     public ApiResponse<WrongQuestionResult> wrongQuestionsBase64(@Valid @RequestBody Base64OcrRequest request) {
-        return ApiResponse.ok(wrongQuestionExtractor.extract(ocrService.recognize(Base64Utils.decode(request.getData()), request.getOptions())));
+        return ApiResponse.ok(wrongQuestionExtractor.extract(ocrService.recognize(Base64Utils.decode(request.getData()), request.getOptions()), request.getOptions()));
     }
 
     @Operation(summary = "Submit a multipart OCR task")
@@ -132,7 +132,10 @@ public class OcrController {
                 "configuredLanguages", modelManager.configuredLanguages(),
                 "tessdataPathExists", modelManager.tessdataPathExists(),
                 "paddleEnabled", properties.getPaddle().isEnabled(),
-                "paddleConfigured", paddleOcrEngine.isConfigured()
+                "paddleConfigured", paddleOcrEngine.isConfigured(),
+                "paddleAvailable", paddleOcrEngine.isAvailable(),
+                "paddleLanguage", properties.getPaddle().getLanguage(),
+                "paddleUseAngleCls", properties.getPaddle().isUseAngleCls()
         ));
     }
 

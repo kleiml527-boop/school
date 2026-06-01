@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -42,10 +43,9 @@ public class PaddleOcrResultParser {
             return text.asText();
         }
         List<String> lines = new ArrayList<>();
-        for (JsonNode block : blockNodes(root)) {
-            JsonNode blockText = block.get("text");
-            if (blockText != null && blockText.isTextual() && !blockText.asText().isBlank()) {
-                lines.add(blockText.asText());
+        for (OcrTextBlock block : blocks(root, 0)) {
+            if (block.getText() != null && !block.getText().isBlank()) {
+                lines.add(block.getText());
             }
         }
         return String.join("\n", lines);
@@ -62,6 +62,7 @@ public class PaddleOcrResultParser {
             double confidence = node.has("confidence") ? node.get("confidence").asDouble() : 0;
             blocks.add(new OcrTextBlock(text.asText(), box[0], box[1], box[2], box[3], confidence, page));
         }
+        blocks.sort(Comparator.comparingInt(OcrTextBlock::getY).thenComparingInt(OcrTextBlock::getX));
         return blocks;
     }
 

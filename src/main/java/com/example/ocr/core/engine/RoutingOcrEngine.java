@@ -50,7 +50,11 @@ public class RoutingOcrEngine implements OcrEngine {
     }
 
     public List<String> availableEngineNames() {
-        return engines.keySet().stream().sorted().toList();
+        return engines.entrySet().stream()
+                .filter(entry -> isAvailable(entry.getKey(), entry.getValue()))
+                .map(Map.Entry::getKey)
+                .sorted()
+                .toList();
     }
 
     public String defaultEngine() {
@@ -75,11 +79,26 @@ public class RoutingOcrEngine implements OcrEngine {
         return engine;
     }
 
+    private boolean isAvailable(String name, OcrEngine engine) {
+        if (!"paddle".equals(name) || !(engine instanceof PaddleOcrEngine)) {
+            return true;
+        }
+        return ((PaddleOcrEngine) engine).isAvailable();
+    }
+
     private String normalize(String engine) {
         return engine == null || engine.isBlank() ? "tess4j" : engine.trim().toLowerCase();
     }
 
-    private record AutoFallbackEngine(OcrEngine primary, OcrEngine fallback) implements OcrEngine {
+    private static class AutoFallbackEngine implements OcrEngine {
+        private final OcrEngine primary;
+        private final OcrEngine fallback;
+
+        private AutoFallbackEngine(OcrEngine primary, OcrEngine fallback) {
+            this.primary = primary;
+            this.fallback = fallback;
+        }
+
         @Override
         public OcrResult recognize(byte[] imageData, OcrOptions options) {
             try {
