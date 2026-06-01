@@ -1,0 +1,57 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: school-orc
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+ocr:
+  engine: ${OCR_ENGINE:tess4j}
+  tessdata-path: ${OCR_TESSDATA_PATH:./tessdata}
+  language: ${OCR_LANGUAGE:chi_sim+eng}
+  psm: ${OCR_PSM:3}
+  timeout-seconds: ${OCR_TIMEOUT_SECONDS:30}
+  pool-size: ${OCR_POOL_SIZE:4}
+  max-file-size: 20MB
+  max-pdf-pages: 20
+  pdf-render-dpi: 300
+  max-image-width: 2500
+  max-image-height: 2500
+  tesseract-dpi: ${OCR_TESSERACT_DPI:300}
+  preserve-interword-spaces: ${OCR_PRESERVE_INTERWORD_SPACES:true}
+  preprocessing:
+    enabled: true
+    adaptive-threshold-window-size: ${OCR_ADAPTIVE_THRESHOLD_WINDOW_SIZE:31}
+    adaptive-threshold-bias: ${OCR_ADAPTIVE_THRESHOLD_BIAS:10}
+    upscale-small-images: ${OCR_UPSCALE_SMALL_IMAGES:true}
+    enhance-contrast: ${OCR_ENHANCE_CONTRAST:true}
+    contrast-factor: ${OCR_CONTRAST_FACTOR:1.2}
+    brightness-offset: ${OCR_BRIGHTNESS_OFFSET:5}
+    sharpen: ${OCR_SHARPEN:false}
+    min-image-width: ${OCR_MIN_IMAGE_WIDTH:1200}
+    min-image-height: ${OCR_MIN_IMAGE_HEIGHT:1200}
+  paddle:
+    enabled: ${OCR_PADDLE_ENABLED:false}
+    command: ${OCR_PADDLE_COMMAND:python src/main/resources/paddle_ocr_json.py}
+    working-directory: ${OCR_PADDLE_WORKING_DIRECTORY:}
+    timeout-seconds: ${OCR_PADDLE_TIMEOUT_SECONDS:30}

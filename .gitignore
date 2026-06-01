@@ -1,0 +1,7 @@
+target/
+.idea/
+tessdata/
+*.iml
+.env
+.env.*
+!.env.example
