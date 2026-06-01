@@ -45,9 +45,9 @@ public class TesseractInstancePool implements AutoCloseable {
         tesseract.setDatapath(properties.getTessdataPath());
         tesseract.setLanguage(properties.getLanguage());
         tesseract.setPageSegMode(properties.getPsm());
-        tesseract.setVariable("user_defined_dpi", String.valueOf(properties.getTesseractDpi()));
+        tesseract.setTessVariable("user_defined_dpi", String.valueOf(properties.getTesseractDpi()));
         if (properties.isPreserveInterwordSpaces()) {
-            tesseract.setVariable("preserve_interword_spaces", "1");
+            tesseract.setTessVariable("preserve_interword_spaces", "1");
         }
         return tesseract;
     }

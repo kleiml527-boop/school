@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 public class WrongQuestionExtractor {
 
     private static final Pattern QUESTION_START = Pattern.compile("^\\s*(?:第?([0-9０-９一二三四五六七八九十百]+)[题題]?[\\.．、)]?|[（(]([0-9０-９一二三四五六七八九十百]+)[）)])\\s*(.*)$");
-    private static final Pattern STUDENT_ANSWER = Pattern.compile("(?:学生答案|我的答案|作答|答案)\\s*[:：]?\\s*([A-Za-zＡ-Ｚａ-ｚ0-9０-９一二三四五六七八九十百]+)");
-    private static final Pattern CORRECT_ANSWER = Pattern.compile("(?:正确答案|参考答案|标准答案)\\s*[:：]?\\s*([A-Za-zＡ-Ｚａ-ｚ0-9０-９一二三四五六七八九十百]+)");
+    private static final Pattern STUDENT_ANSWER = Pattern.compile("(?:学生答案|我的答案|作答|答案)\\s*[:：]?\\s*([A-Za-zＡ-Ｚａ-ｚ0-9０-９一二三四五六七八九十百对错√×✓✗]+)");
+    private static final Pattern CORRECT_ANSWER = Pattern.compile("(?:正确答案|参考答案|标准答案)\\s*[:：]?\\s*([A-Za-zＡ-Ｚａ-ｚ0-9０-９一二三四五六七八九十百对错√×✓✗]+)");
     private static final Pattern TYPE = Pattern.compile("(选择题|填空题|判断题|计算题|应用题|解答题)");
     private static final Pattern ERROR_TYPE = Pattern.compile("(?:错误类型|错因|原因)\\s*[:：]?\\s*([^\\n；;]+)");
     private static final Pattern KNOWLEDGE_POINT = Pattern.compile("(?:知识点|考点)\\s*[:：]?\\s*([^\\n；;]+)");
